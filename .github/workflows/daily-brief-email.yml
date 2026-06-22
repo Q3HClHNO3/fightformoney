@@ -1,0 +1,51 @@
+name: Daily Brief Email
+
+on:
+  workflow_dispatch:
+    inputs:
+      brief_file:
+        description: "Markdown/text file to send"
+        required: false
+        default: "daily-brief.md"
+      subject:
+        description: "Email subject override"
+        required: false
+        default: ""
+  schedule:
+    # 09:00 Asia/Shanghai every day. GitHub cron uses UTC.
+    - cron: "0 1 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-brief-email
+  cancel-in-progress: false
+
+jobs:
+  send-email:
+    name: Send QQ daily brief
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Send brief through QQ SMTP
+        env:
+          SMTP_HOST: smtp.qq.com
+          SMTP_PORT: "465"
+          SMTP_USER: ${{ secrets.QQ_SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.QQ_SMTP_AUTH_CODE }}
+          MAIL_TO: ${{ secrets.QQ_MAIL_TO }}
+          MAIL_FROM: ${{ secrets.QQ_SMTP_USER }}
+          MAIL_SUBJECT: ${{ github.event.inputs.subject }}
+          BRIEF_FILE: ${{ github.event.inputs.brief_file || 'daily-brief.md' }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: python scripts/send_daily_brief.py
