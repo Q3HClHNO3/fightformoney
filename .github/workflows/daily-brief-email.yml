@@ -37,6 +37,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Generate daily investment report
+        run: python scripts/generate_investment_report.py
+
       - name: Send brief through QQ SMTP
         env:
           SMTP_HOST: smtp.qq.com
