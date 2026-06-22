@@ -41,10 +41,10 @@ jobs:
         env:
           SMTP_HOST: smtp.qq.com
           SMTP_PORT: "465"
-          SMTP_USER: ${{ secrets.QQ_SMTP_USER }}
-          SMTP_PASSWORD: ${{ secrets.QQ_SMTP_AUTH_CODE }}
-          MAIL_TO: ${{ secrets.QQ_MAIL_TO }}
-          MAIL_FROM: ${{ secrets.QQ_SMTP_USER }}
+          SMTP_USER: ${{ secrets.QQSMTPUSER }}
+          SMTP_PASSWORD: ${{ secrets.QQSMTPAUTHCODE }}
+          MAIL_TO: ${{ secrets.QQMAILTO }}
+          MAIL_FROM: ${{ secrets.QQSMTPUSER }}
           MAIL_SUBJECT: ${{ github.event.inputs.subject }}
           BRIEF_FILE: ${{ github.event.inputs.brief_file || 'daily-brief.md' }}
           GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
