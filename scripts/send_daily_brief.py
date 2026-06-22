@@ -67,7 +67,7 @@ def main() -> None:
 
     source_path, brief_text = read_brief()
     today = datetime.now(ZoneInfo("Asia/Shanghai")).strftime("%Y-%m-%d")
-    subject = os.environ.get("MAIL_SUBJECT", "").strip() or f"Daily Brief - {today}"
+    subject = os.environ.get("MAIL_SUBJECT", "").strip() or f"每日投资分析报告 - {today}"
 
     message = EmailMessage()
     message["Subject"] = subject
