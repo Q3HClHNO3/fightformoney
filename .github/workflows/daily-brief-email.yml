@@ -12,12 +12,12 @@ on:
         required: false
         default: ""
   schedule:
-    # 14:05, 14:15, and 14:30 Asia/Shanghai every day.
-    # GitHub cron uses UTC. Multiple slots reduce missed/delayed scheduled runs.
-    - cron: "5,15,30 6 * * *"
+    # 14:05 Asia/Shanghai every day. GitHub cron uses UTC.
+    # Avoiding the top of the hour improves schedule reliability on GitHub Actions.
+    - cron: "5 6 * * *"
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: daily-brief-email
@@ -52,7 +52,4 @@ jobs:
           MAIL_SUBJECT: ${{ github.event.inputs.subject }}
           BRIEF_FILE: ${{ github.event.inputs.brief_file || 'daily-brief.md' }}
           GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          GITHUB_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_EVENT_NAME: ${{ github.event_name }}
         run: python scripts/send_daily_brief.py
