@@ -57,6 +57,10 @@ def scheduled_marker(today: str) -> str:
     return f".sent/daily-brief-{today}.txt"
 
 
+def should_use_send_marker() -> bool:
+    return os.environ.get("GITHUB_EVENT_NAME") in {"schedule", "push"}
+
+
 def github_api_request(url: str, token: str, method: str = "GET", payload: dict | None = None) -> bytes:
     data = json.dumps(payload).encode("utf-8") if payload is not None else None
     request = urllib.request.Request(
@@ -76,7 +80,7 @@ def github_api_request(url: str, token: str, method: str = "GET", payload: dict 
 
 
 def scheduled_marker_exists(today: str) -> bool:
-    if os.environ.get("GITHUB_EVENT_NAME") != "schedule":
+    if not should_use_send_marker():
         return False
 
     token = os.environ.get("GITHUB_TOKEN", "").strip()
@@ -97,7 +101,7 @@ def scheduled_marker_exists(today: str) -> bool:
 
 
 def write_scheduled_marker(today: str, subject: str) -> None:
-    if os.environ.get("GITHUB_EVENT_NAME") != "schedule":
+    if not should_use_send_marker():
         return
 
     token = os.environ.get("GITHUB_TOKEN", "").strip()
