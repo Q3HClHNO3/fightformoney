@@ -1,9 +1,6 @@
 name: Daily Brief Email
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       brief_file:
@@ -14,11 +11,6 @@ on:
         description: "Email subject override"
         required: false
         default: ""
-  schedule:
-    # 13:45-14:30 Asia/Shanghai every day.
-    # GitHub cron uses UTC. Multiple slots reduce missed/delayed scheduled runs.
-    - cron: "45,50,55 5 * * *"
-    - cron: "0,5,10,15,20,25,30 6 * * *"
 
 permissions:
   contents: write
@@ -32,7 +24,6 @@ jobs:
     name: Send QQ daily brief
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    if: ${{ github.event_name != 'push' || contains(github.event.head_commit.message, '[send-brief-now]') }}
 
     steps:
       - name: Check out repository
